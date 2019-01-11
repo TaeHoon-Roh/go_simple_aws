@@ -1,0 +1,15 @@
+<!--index.html-->
+
+<!--Embed the header.html template at this location-->
+{{ template "header.html" .}}
+
+<h1>Hello Gin!</h1> <br>
+<script>
+    var value = {{.Page}}.toString()
+    var temp = value.split("\n")
+    for (var i in temp) {
+        document.write(temp[i]+"<br>")
+    }
+</script>
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}
