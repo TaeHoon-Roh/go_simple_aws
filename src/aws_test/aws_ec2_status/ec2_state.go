@@ -7,7 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
-func Describe(svc *ec2.EC2) (string){
+func Describe(svc *ec2.EC2) (string, error) {
 
 	temp := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
@@ -30,10 +30,12 @@ func Describe(svc *ec2.EC2) (string){
 		desc += fmt.Sprintln("  > Reservation Id", *res.ReservationId, " Num Instances: ", len(res.Instances))
 		for _, inst := range result.Reservations[idx].Instances {
 			fmt.Println("    - Instance ID: ", *inst.InstanceId)
-			desc += fmt.Sprintln("    - Instance ID: ", *inst.InstanceId)
+			fmt.Println("Device id : ", *inst.State.Name)
+			fmt.Println("Start Device Time : ", *inst.LaunchTime)
+			desc += fmt.Sprintln("    - Instance ID: ", *inst.InstanceId, " Status : ", *inst.State.Name, " Time : ", *inst.LaunchTime)
 		}
 	}
-	return desc
+	return desc, err
 
 }
 

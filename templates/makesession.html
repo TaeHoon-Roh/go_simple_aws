@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="/checkkey" method="post">
+    <div>
+        <label for="AccessKey">AccessKey:</label>
+        <input type="text" name="AccessKey" />
+    </div>
+    <div>
+        <label for="SecretAccessKey">SecretAccessKey:</label>
+        <input type="text" name="SecretAccessKey" />
+    </div>
+    <div>
+        <select name="Region">
+            <option value="ap-northeast-2">
+                ap-northeast-2
+            </option>
+            <option value="ap-northeast-2">
+                ap-northeast-2
+            </option>
+            <option value="ap-northeast-2">
+                ap-northeast-2
+            </option>
+        </select>
+    </div>
+
+    <div class="button">
+        <button type="submit">Submit</button>
+    </div>
+</form>
+
+<h1>{{.message}}</h1>
+
+</body>
+</html>
