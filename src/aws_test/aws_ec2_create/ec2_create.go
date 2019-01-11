@@ -6,27 +6,32 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"log"
-	"os"
 	"time"
 )
 
-func Create_DeepLearning_Player_Instances(svc *ec2.EC2, TeamName string) {
-	info := aws_data_struct.PlayerEc2Status{}
+func Create_DeepLearning_Player_Instances(svc *ec2.EC2, info *aws_data_struct.PlayerEc2Status) {
 
-	info.TeamName = TeamName
-	info.KeyName, info.KeyFingerPrint, info.KeyMaterial = Create_Key(svc, TeamName)
-	info.Ec2Id[0] = Create_Instance(svc, info.KeyName, "t3.medium", 20, TeamName)
-	info.Ec2Id[1] = Create_Instance(svc, info.KeyName, "t3.medium", 20, TeamName)
-	info.Ec2Id[1] = Create_Instance(svc, info.KeyName, "t3.medium", 20, TeamName)
+	var err error
+	info.KeyName, info.KeyFingerPrint, info.KeyMaterial, err = Create_Key(svc, info.TeamName)
+	if err != nil {
+		fmt.Println("Create Key Error!!")
+	} else {
+		info.Ec2Id[0], err = Create_Instance(svc, info.KeyName, "t3.medium", 20, info.TeamName)
+		info.Ec2Id[1], err = Create_Instance(svc, info.KeyName, "t3.medium", 20, info.TeamName)
+		info.Ec2Id[2], err = Create_Instance(svc, info.KeyName, "t3.medium", 20, info.TeamName)
+
+		if err != nil {
+			fmt.Println("Create Instance Error!!")
+		}
+	}
 
 	//info.Ec2Id[1] = Create_Instance(svc, info.KeyName, "p2.xlarge", 100)
 	//info.Ec2Id[2] = Create_Instance(svc, info.KeyName, "p2.xlarge", 100)
 
 	info.StartTime = time.Now().UTC()
-	aws_data_struct.Player = append(aws_data_struct.Player, info)
 }
 
-func Create_Instance(svc *ec2.EC2, keyName string, instanceType string, ebsVolume int64, TeamName string) string {
+func Create_Instance(svc *ec2.EC2, keyName string, instanceType string, ebsVolume int64, TeamName string) (string, error) {
 	// Specify the details of the instance that you want to create.
 
 	runResult, err := svc.RunInstances(&ec2.RunInstancesInput{
@@ -87,7 +92,7 @@ func Create_Instance(svc *ec2.EC2, keyName string, instanceType string, ebsVolum
 
 	if err != nil {
 		fmt.Println("Could not create instance", err)
-		return ""
+		return "", err
 	}
 
 	// Add tags to the created instance
@@ -102,13 +107,13 @@ func Create_Instance(svc *ec2.EC2, keyName string, instanceType string, ebsVolum
 	})
 	if errtag != nil {
 		log.Println("Could not create tags for instance", runResult.Instances[0].InstanceId, errtag)
-		return ""
+		return "", errtag
 	}
 
-	return *runResult.Instances[0].InstanceId
+	return *runResult.Instances[0].InstanceId, err
 }
 
-func Create_Key(svc *ec2.EC2, team_name string) (string, string, string) {
+func Create_Key(svc *ec2.EC2, team_name string) (string, string, string, error) {
 	// Create the key
 	result, err := svc.CreateKeyPair(&ec2.CreateKeyPairInput{
 		DryRun:  nil,
@@ -117,10 +122,9 @@ func Create_Key(svc *ec2.EC2, team_name string) (string, string, string) {
 
 	if err != nil {
 		fmt.Println("Got error creating key: ", err)
-		os.Exit(1)
 	}
 
-	return *result.KeyName, *result.KeyFingerprint, *result.KeyMaterial
+	return *result.KeyName, *result.KeyFingerprint, *result.KeyMaterial, err
 }
 
 func Create_Image(svc *ec2.EC2, keyName string, blockDeviceId string) {

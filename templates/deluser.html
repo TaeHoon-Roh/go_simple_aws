@@ -1,0 +1,17 @@
+<!--index.html-->
+
+<!--Embed the header.html template at this location-->
+{{ template "header.html" .}}
+
+<h1>Delete User Page</h1> <br>
+
+<form action="/v1/deluser_post" method="POST" name="test">
+    <div>
+        Select Delete Team :
+        <select name="choice">
+            <option value="All">All</option>
+        </select>
+        </p>
+        <input type="submit" value="send"/>
+    </div>
+</form>

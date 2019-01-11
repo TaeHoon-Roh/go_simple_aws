@@ -2,6 +2,8 @@ package aws_web
 
 import (
 	"aws_test/aws_data_struct"
+	"aws_test/aws_ec2_create"
+	"aws_test/aws_ec2_delete"
 	"aws_test/aws_ec2_status"
 	"aws_test/aws_session"
 	"fmt"
@@ -25,18 +27,44 @@ func CreateWebServer() (server *gin.Engine) {
 	v1 := r.Group("/v1")
 	{
 		v1.GET("/", index)
-		v1.GET("/adduser", adduser)
 		v1.GET("/playerinfo", playerinfo)
+		v1.GET("/adduser", adduser)
 		v1.POST("/adduser_post", adduser_post)
+
+		v1.GET("/deluser", deluser)
+		v1.POST("/deluser_post", deluser_post)
 	}
 	return r
 }
 
+func deluser_post(context *gin.Context) {
+	aws_ec2_delete.Delete_DeepLearning_Plyaer_Instances(MySvc)
+	playerinfo(context)
+}
+
+func deluser(context *gin.Context) {
+	context.HTML(
+		http.StatusOK,
+		"deluser.html",
+		gin.H{
+			"temp": aws_data_struct.Player,
+		})
+
+}
+
 func playerinfo(context *gin.Context) {
+
+	context.HTML(
+		http.StatusOK,
+		"playerinfo.html",
+		gin.H{
+			"temp": aws_data_struct.Player,
+		})
 
 }
 
 func adduser_post(context *gin.Context) {
+	fmt.Println("AddUser_Post func")
 	TeamName := context.PostForm("teamname")
 	Type := context.PostForm("type")
 
@@ -45,6 +73,10 @@ func adduser_post(context *gin.Context) {
 	p.Type = Type
 
 	//인스턴스 만들어서 할차례
+	aws_ec2_create.Create_DeepLearning_Player_Instances(MySvc, &p)
+	aws_data_struct.Player = append(aws_data_struct.Player, p)
+
+	playerinfo(context)
 }
 
 func adduser(context *gin.Context) {
@@ -97,19 +129,5 @@ func index(context *gin.Context) {
 		gin.H{
 			"title": "Home Page",
 			"Page":  desc,
-		})
-}
-
-func create(context *gin.Context) {
-
-	test_1 := context.PostForm("nickname")
-	test_2 := context.PostForm("job")
-	fmt.Println(test_1, " ", test_2)
-
-	context.HTML(
-		http.StatusOK,
-		"createInstances.html",
-		gin.H{
-			"title": "Home Page",
 		})
 }
