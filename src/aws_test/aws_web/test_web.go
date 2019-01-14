@@ -18,7 +18,6 @@ var MySvc *ec2.EC2
 
 func CreateWebServer() (server *gin.Engine) {
 	r := gin.Default()
-	//r.Use(static.Serve("/", static.LocalFile("./src/aws_test/aws_web/views", true)))
 	r.LoadHTMLGlob("templates/*")
 
 	r.GET("/", rootPage)
@@ -47,6 +46,7 @@ func deluser(context *gin.Context) {
 		http.StatusOK,
 		"deluser.html",
 		gin.H{
+			"title": "Wcg Demo Page",
 			"temp": aws_data_struct.Player,
 		})
 
@@ -54,10 +54,12 @@ func deluser(context *gin.Context) {
 
 func playerinfo(context *gin.Context) {
 
+	fmt.Println(aws_data_struct.Player)
 	context.HTML(
 		http.StatusOK,
 		"playerinfo.html",
 		gin.H{
+			"title": "Wcg Demo Page",
 			"temp": aws_data_struct.Player,
 		})
 
@@ -72,7 +74,6 @@ func adduser_post(context *gin.Context) {
 	p.TeamName = TeamName
 	p.Type = Type
 
-	//인스턴스 만들어서 할차례
 	aws_ec2_create.Create_DeepLearning_Player_Instances(MySvc, &p)
 	aws_data_struct.Player = append(aws_data_struct.Player, p)
 
@@ -84,7 +85,9 @@ func adduser(context *gin.Context) {
 	context.HTML(
 		http.StatusOK,
 		"adduser.html",
-		gin.H{})
+		gin.H{
+			"title": "Wcg Demo Page",
+		})
 
 }
 
@@ -104,6 +107,7 @@ func checkKey(context *gin.Context) {
 			http.StatusOK,
 			"makesession.html",
 			gin.H{
+				"title": "Wcg Demo Page",
 				"message": "Key error",
 			})
 	} else {
@@ -117,7 +121,9 @@ func rootPage(context *gin.Context) {
 	context.HTML(
 		http.StatusOK,
 		"makesession.html",
-		gin.H{})
+		gin.H{
+			"title": "Wcg Demo Page",
+		})
 }
 
 func index(context *gin.Context) {
@@ -127,7 +133,7 @@ func index(context *gin.Context) {
 		http.StatusOK,
 		"index.html",
 		gin.H{
-			"title": "Home Page",
+			"title": "Wcg Demo Page",
 			"Page":  desc,
 		})
 }

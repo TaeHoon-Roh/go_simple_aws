@@ -2,7 +2,7 @@ package main
 
 import (
 	"aws_test/aws_data_struct"
-	"fmt"
+	"aws_test/aws_web"
 	"strconv"
 	"time"
 )
@@ -26,16 +26,8 @@ func makeTestPlayer(pnum int) {
 }
 
 func main() {
-	makeTestPlayer(3)
-	fmt.Println(aws_data_struct.Player)
-
-	aws_data_struct.Player = nil
-	fmt.Println(aws_data_struct.Player)
-
-	makeTestPlayer(2)
-	fmt.Println(aws_data_struct.Player)
-	//server := aws_web.CreateWebServer()
-	//server.Run()
+	server := aws_web.CreateWebServer()
+	server.Run(":80")
 }
 
 func testValue(val *int) int {

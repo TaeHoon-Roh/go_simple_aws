@@ -16,6 +16,7 @@ func Delete_DeepLearning_Plyaer_Instances(svc *ec2.EC2) {
 		Delete_Key(svc, p.KeyName)
 	}
 	aws_data_struct.Player = nil
+	aws_data_struct.Player = make([]aws_data_struct.PlayerEc2Status,0)
 }
 
 func Terminate_Instance(svc *ec2.EC2, instanceId string) {

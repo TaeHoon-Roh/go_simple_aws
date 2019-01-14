@@ -1,0 +1,22 @@
+<!--index.html-->
+
+<!--Embed the header.html template at this location-->
+{{ template "header.html" .}}
+
+<h1>Add User Page</h1> <br>
+
+<form action="/v1/adduser_post" method="POST" name="test">
+    <div>
+        TeamName :
+        <input type="text" name="teamname"/>
+    </div>
+    <div>
+        Type :
+        <select name="type">
+            <option value="DeepLearning">DeepLearning</option>
+            <option value="Rule">Rule-Base</option>
+        </select>
+    </p>
+    <input type="submit" value="send"/>
+    </div>
+</form>
